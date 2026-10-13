@@ -502,8 +502,11 @@
                 </span>
               </span>
               <span class="card-footer">
-                <span>UP {{ node.active ? node.uptimeText : '--' }}</span>
+                <span class="card-uptime">
+                  UP {{ node.active ? node.uptimeText : '--' }}
+                </span>
                 <span class="color-purple">RX {{ node.receiveRate }}</span>
+                <span class="color-blue">TX {{ node.transmitRate }}</span>
               </span>
             </button>
           </div>

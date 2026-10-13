@@ -911,15 +911,21 @@ select {
   color: var(--orange);
 }
 .card-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 8px;
   color: var(--dim);
   font-size: 11px;
   margin-top: 11px;
 }
 .card-footer span {
   white-space: nowrap;
+}
+.card-footer .card-uptime {
+  grid-column: 1 / -1;
+}
+.card-footer .color-blue {
+  text-align: right;
 }
 .node-card.is-offline .card-art {
   filter: grayscale(0.8);
