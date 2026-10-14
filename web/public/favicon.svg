@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>Pixel Status</title>
+  <path fill="#111521" d="M2 0h28v2h2v28h-2v2H2v-2H0V2h2z"/>
+  <path fill="#80591c" d="M8 10h20v16H8z"/>
+  <path fill="#f3bd45" d="M6 8h20v16H6z"/>
+  <path fill="#ffe18a" d="M6 8h20v4H6z"/>
+  <path fill="#bd8229" d="M6 12h2v12H6zM8 22h18v2H8z"/>
+  <path fill="#111521" d="M10 14h10v2H10zM10 18h10v2H10z"/>
+  <path fill="#97ce35" d="M22 14h2v2h-2z"/>
+  <path fill="#39cfce" d="M22 18h2v2h-2z"/>
+</svg>

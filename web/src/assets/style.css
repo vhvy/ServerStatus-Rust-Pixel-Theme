@@ -1,6 +1,6 @@
 @font-face {
   font-family: Departure;
-  src: url('../fonts/DepartureMono-Regular.woff2') format('woff2');
+  src: url('./fonts/DepartureMono-Regular.woff2') format('woff2');
   font-display: swap;
   font-weight: 400;
   font-style: normal;
@@ -263,6 +263,7 @@ select:focus-visible {
   gap: 8px;
 }
 .overview-network > span:last-child {
+  align-items: baseline;
   white-space: nowrap;
 }
 .overview-network b {
@@ -270,9 +271,18 @@ select:focus-visible {
   margin-right: 5px;
 }
 .overview-network strong {
-  font-size: 11px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 22px;
   font-weight: 400;
   margin-right: 12px;
+}
+.overview-network .network-number {
+  font-size: 22px;
+}
+.overview-network .network-unit {
+  font-size: 11px;
 }
 .overview-network strong:last-child {
   margin: 0;
@@ -1032,18 +1042,18 @@ dialog::backdrop {
   line-height: 1.3;
   margin: 0;
 }
-dialog p {
+#about-dialog p {
   color: var(--muted);
 }
-dialog dt {
+#about-dialog dt {
   color: var(--cyan);
   margin-top: 20px;
 }
-dialog dd {
+#about-dialog dd {
   margin: 6px 0 0;
   color: var(--muted);
 }
-dialog a {
+#about-dialog a {
   color: var(--cyan);
 }
 .noscript {
@@ -1633,9 +1643,9 @@ dialog a {
   .dialog-heading h2 {
     font-size: 22px;
   }
-  dialog p,
-  dialog dd,
-  dialog dt {
+  #about-dialog p,
+  #about-dialog dd,
+  #about-dialog dt {
     font-size: 11px;
   }
 }
@@ -1645,5 +1655,159 @@ dialog a {
   }
   .blink {
     animation: none;
+  }
+}
+
+/* Node details stay out of the fleet's document flow. Native dialog handles
+   modal focus, Escape and inert background controls. */
+html.node-details-open {
+  overflow: hidden;
+}
+.node-drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(1060px, 92vw);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-left: 2px solid var(--line);
+  background: var(--bg);
+}
+.node-drawer .console {
+  margin: 0;
+  min-height: 100%;
+  border: 0;
+  background: var(--surface);
+}
+.node-drawer .instrument-grid {
+  background: var(--line);
+}
+.node-drawer .console-title {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 64px;
+}
+.node-drawer .console-title > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+.node-drawer .node-switcher {
+  flex-shrink: 0;
+}
+.node-drawer .protocols {
+  flex-wrap: wrap;
+}
+.node-drawer .protocols span {
+  white-space: nowrap;
+}
+.node-drawer .node-switcher button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.mobile-close {
+  display: none;
+}
+@media (min-width: 681px) {
+  .node-drawer .instrument-grid {
+    grid-template-columns: 28% 36% 18% 1fr;
+    grid-template-rows: 162px 150px 160px;
+  }
+  .node-drawer .device-panel {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+  .node-drawer .cpu-panel {
+    grid-column: 2 / 5;
+    grid-row: 1;
+  }
+  .node-drawer .memory-panel {
+    grid-column: 2 / 5;
+    grid-row: 2;
+  }
+  .node-drawer .network-panel {
+    grid-column: 1 / 3;
+    grid-row: 3;
+  }
+  .node-drawer .disk-panel {
+    grid-column: 3;
+    grid-row: 3;
+  }
+  .node-drawer .ping-panel {
+    grid-column: 4;
+    grid-row: 3;
+  }
+  .node-drawer .device-art {
+    height: 140px;
+  }
+  .node-drawer .device-art img {
+    width: 180px;
+    height: 135px;
+  }
+  .node-drawer .memory-layout {
+    grid-template-columns: 1fr 125px;
+    gap: 14px;
+  }
+  .node-drawer .cpu-plot,
+  .node-drawer .cpu-plot canvas {
+    height: 70px;
+  }
+  .node-drawer .network-panel canvas {
+    height: 54px;
+  }
+  .node-drawer .ping-panel tbody {
+    display: table-row-group;
+  }
+  .node-drawer .ping-panel tr {
+    display: table-row;
+  }
+  .node-drawer .ping-panel td:not(:first-child) {
+    text-align: right;
+  }
+}
+@media (min-width: 681px) and (max-width: 999px) {
+  .node-drawer .instrument-grid {
+    grid-template-columns: 35% 1fr;
+    grid-template-rows: 162px 170px 170px 145px;
+  }
+  .node-drawer .cpu-panel {
+    grid-column: 2;
+  }
+  .node-drawer .memory-panel {
+    grid-column: 2;
+  }
+  .node-drawer .network-panel {
+    grid-column: 1 / 3;
+  }
+  .node-drawer .disk-panel {
+    grid-column: 1;
+    grid-row: 4;
+  }
+  .node-drawer .ping-panel {
+    grid-column: 2;
+    grid-row: 4;
+  }
+}
+@media (max-width: 680px) {
+  .node-drawer {
+    width: 100%;
+    border: 0;
+  }
+  .node-drawer .console-title {
+    padding-top: max(10px, env(safe-area-inset-top));
+  }
+  .node-drawer .console-bottom {
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+  }
+  .desktop-close {
+    display: none;
+  }
+  .mobile-close {
+    display: inline;
   }
 }

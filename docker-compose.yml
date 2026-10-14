@@ -22,4 +22,4 @@ services:
       - '8081:80'
     # Optional: mount your own frontend config without rebuilding the image.
     # volumes:
-    #   - ./theme-config.js:/opt/ServerStatus/web/assets/js/config.js:ro
+    #   - ./theme-config.json:/opt/ServerStatus/web/theme-config.json:ro

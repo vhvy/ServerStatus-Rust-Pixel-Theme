@@ -1,21 +1,64 @@
-name: Docker image
+name: Check and publish theme
 
 on:
   push:
     branches: [master]
-    paths-ignore:
-      - README.md
+    tags: ["v*"]
+    paths:
+      - "web/**"
+      - "deploy/**"
+      - "Dockerfile"
+      - ".dockerignore"
+      - ".github/workflows/docker.yml"
+  pull_request:
+    paths:
+      - "web/**"
+      - "deploy/**"
+      - "Dockerfile"
+      - ".dockerignore"
+      - ".github/workflows/docker.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: docker-${{ github.ref }}
+  group: theme-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  check:
+    name: Check frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm and Node.js
+        uses: pnpm/setup@v3
+        with:
+          working-directory: web
+          runtime: node@24
+          cache: true
+          cache-dependency-path: web/pnpm-lock.yaml
+          require-lockfile: true
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Run tests
+        run: pnpm test
+
+      - name: Typecheck and build
+        run: pnpm build
+
   image:
+    name: Publish multi-platform image
+    needs: check
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,6 +82,8 @@ jobs:
           tags: |
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
             type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
             type=sha
 
       - name: Login to GHCR

@@ -1,0 +1,10 @@
+{
+  "title": "vhvy's Server Status",
+  "defaultTheme": "light",
+  "endpoint": "/json/stats.json",
+  "refreshInterval": 5000,
+  "staleAfter": 30,
+  "requestTimeout": 8000,
+  "historyLimit": 60,
+  "nodeArt": {}
+}
