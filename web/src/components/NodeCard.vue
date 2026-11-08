@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import CarrierIcon from './CarrierIcon.vue';
 import { format } from '../lib/core';
 import type { NodeView } from '../types';
 
@@ -61,6 +62,28 @@ defineExpose({ focus: () => button.value?.focus() });
         >
           <i></i>
         </span>
+      </span>
+    </span>
+    <span class="card-probes">
+      <span class="card-probe-heading" aria-hidden="true">
+        <span>PING</span>
+        <span>RTT</span>
+        <span>LOSS</span>
+      </span>
+      <span
+        v-for="probe in node.probes"
+        :key="probe.carrier"
+        class="card-probe"
+        :aria-label="
+          probe.carrier + ', 延迟 ' + probe.latency + ', 丢包率 ' + probe.loss
+        "
+      >
+        <span class="card-probe-carrier">
+          <CarrierIcon :carrier="probe.carrier" />
+          <span>{{ probe.carrier }}</span>
+        </span>
+        <span :class="{ bad: probe.timeout }">{{ probe.latency }}</span>
+        <span :class="{ bad: probe.lossWarning }">{{ probe.loss }}</span>
       </span>
     </span>
     <span class="card-footer">

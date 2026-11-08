@@ -920,6 +920,41 @@ select {
 .card-meter-label b.warning {
   color: var(--orange);
 }
+.card-probes {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.card-probe-heading,
+.card-probe {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr);
+  gap: 8px;
+}
+.card-probe-heading,
+.card-probe-carrier {
+  color: var(--muted);
+}
+.card-probe-carrier {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-probe > span,
+.card-probe-heading > span {
+  white-space: nowrap;
+}
+.card-probe > span:not(:first-child),
+.card-probe-heading > span:not(:first-child) {
+  text-align: right;
+}
+.card-probe .bad {
+  color: var(--danger);
+}
 .card-footer {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
