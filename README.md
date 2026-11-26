@@ -57,6 +57,25 @@ volumes:
 | `historyLimit`    | `60`               | 每个节点的会话样本数，范围 2–600                     |
 | `nodeArt`         | `{}`               | 按节点名称指定 `compute`、`storage` 或 `router` 插画 |
 
+### 节点地图
+
+在后端 `config.toml` 的 `hosts` 记录中，用原有 `location` 字段填写国家或地区代码（如 `CN`、`DE`，也可用国旗 emoji）。将 `map_location` 追加到节点现有的 `labels`，填写愿意公开的省州或城市。后端仍用原有接口发布这些字段。
+
+```toml
+location = "cn"
+labels = "os=debian;map_location=Shaanxi"
+```
+
+- 只填国家代码时显示该国家或地区的代表点。无法解析国家或显式地名无法匹配时显示为 `UNMAPPED`。
+- 支持 `Shaanxi` / `陕西`、`Xian` / `西安` 和 `Frankfurt` 等地名。省州和城市同名时优先采用省州代表点。同一国家内的同名城市可写成 `省州.城市`，例如美国的 `Missouri.Springfield`。
+- `labels` 会随公开的 `stats.json` 返回。如果只想公开到省，`map_location` 就只填省。地图不会从主机名、别名或 IP 推断位置。
+
+在作为中心的主机的 `labels` 中追加 `map_center=true`，例如 `labels = "map_location=Shaanxi;map_center=true"`。其余所有已定位的点位（包括离线点位）都会连接到该中心。没有可定位的中心，或配置了不同地点的多个中心时，地图隐藏连线。
+
+地图默认聚焦在线节点和连线端点，可切换至世界视野。点选合并点位中的节点可跳转到卡片。`AVG RTT` 汇总各位置的有效三网探测，虚线表示配置的拓扑关系。
+
+地图和地名索引随主题一起部署，浏览器从同一站点读取静态索引。城市和别名由 [GeoNames 城市数据（CC BY 4.0）](https://download.geonames.org/export/dump/readme.txt) 精简得出，陆地轮廓及省州、国家代表点来自 [Natural Earth](https://www.naturalearthdata.com/)。
+
 ### 历史延迟
 
 点击节点后，详情面板中的 **PING HISTORY** 展示联通（CU）、电信（CT）和移动（CM）的毫秒延迟。时间轴使用浏览器本地时间，节点离线和探测全丢包显示为断点。打开详情时读取 `/data/ping_history.json`，打开期间每分钟刷新，切换节点共用同一份缓存。
@@ -143,6 +162,12 @@ volumes:
 Run `docker compose up -d` to apply the mount. Edit the mounted file and refresh the page to apply changes without rebuilding. If an editor or script replaces the file atomically, recreate the container to rebind it. Create a valid JSON file before mounting; comments are not supported. Configuration failures are shown on the page.
 
 Settings include `title`, `defaultTheme` (`light` / `dark`), `endpoint` (`/json/stats.json`), `refreshInterval` (milliseconds), `staleAfter` (seconds), `requestTimeout` (milliseconds), `historyLimit` (2–600 samples), and `nodeArt` (node names mapped to `compute`, `storage`, or `router`). A saved browser theme overrides `defaultTheme`.
+
+### Node map
+
+Set a host's existing `location` to its country or region code or flag. Append `map_location=Shaanxi` or `map_location=Frankfurt` to the host's `labels` in the backend `config.toml` to specify a province or city. Omit the label for country-level resolution. Qualify ambiguous cities as `province.city`, such as `Missouri.Springfield`. The label is publicly visible in `stats.json`. The bundled index combines trimmed [GeoNames city data (CC BY 4.0)](https://download.geonames.org/export/dump/readme.txt) with [Natural Earth](https://www.naturalearthdata.com/) label points.
+
+Append `map_center=true` to the selected host's `labels` to draw connections from its location to every other mapped location, including offline locations. Connections require exactly one mapped center location.
 
 ### Ping history
 

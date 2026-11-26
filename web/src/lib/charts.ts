@@ -127,6 +127,28 @@ const pingSeries = [
   ['ct', '--purple'],
   ['cm', '--orange'],
 ] as const;
+const pingPlotInset = 2;
+
+function pingTimeFraction(timestamp: number, start: number, end: number) {
+  return end > start ? (timestamp - start) / (end - start) : 0.5;
+}
+
+function nearestPingPoint(points: PingHistoryPoint[], timestamp: number) {
+  let first = 0;
+  let last = points.length - 1;
+  while (first < last) {
+    const middle = Math.floor((first + last) / 2);
+    if (points[middle].t < timestamp) first = middle + 1;
+    else last = middle;
+  }
+  if (
+    first > 0 &&
+    timestamp - points[first - 1].t <= points[first].t - timestamp
+  ) {
+    return first - 1;
+  }
+  return first;
+}
 
 function pingScale(points: PingHistoryPoint[]) {
   let peak = 0;
@@ -143,8 +165,8 @@ function ping(canvas: HTMLCanvasElement | null, points: PingHistoryPoint[]) {
   const { ctx, color, width, height } = chart;
   const maximum = pingScale(points);
   const start = points[0].t;
-  const duration = points[points.length - 1].t - start;
-  const inset = 2;
+  const end = points[points.length - 1].t;
+  const inset = pingPlotInset;
   const bottom = height - inset;
   const plotHeight = bottom - inset;
 
@@ -167,9 +189,8 @@ function ping(canvas: HTMLCanvasElement | null, points: PingHistoryPoint[]) {
         connected = false;
         continue;
       }
-      const x = duration
-        ? inset + ((point.t - start) / duration) * (width - inset * 2)
-        : width / 2;
+      const x =
+        inset + pingTimeFraction(point.t, start, end) * (width - inset * 2);
       const y = bottom - (value / maximum) * plotHeight;
       if (connected) ctx.lineTo(x, y);
       else {
@@ -182,4 +203,13 @@ function ping(canvas: HTMLCanvasElement | null, points: PingHistoryPoint[]) {
   }
 }
 
-export { cpu, network, ping, pingScale, pingSeries };
+export {
+  cpu,
+  network,
+  nearestPingPoint,
+  ping,
+  pingPlotInset,
+  pingScale,
+  pingSeries,
+  pingTimeFraction,
+};

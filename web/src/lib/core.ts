@@ -226,15 +226,21 @@ function describe(
     const loss = num(server[`ping_${key}`]);
     const available =
       active && time !== null && loss !== null && (time > 0 || loss > 0);
+    const timeout = available && loss >= 100;
     return {
       carrier,
+      rttMs: available && !timeout ? time : null,
+      lossPercent:
+        active && loss !== null && (available || loss > 0)
+          ? Math.min(100, loss)
+          : null,
       latency: available
-        ? loss >= 100
+        ? timeout
           ? 'TIMEOUT'
           : Math.round(time) + 'ms'
         : '--',
       loss: available ? Math.min(100, loss) + '%' : '--',
-      timeout: available && loss >= 100,
+      timeout,
       lossWarning: available && loss > 0,
     };
   });

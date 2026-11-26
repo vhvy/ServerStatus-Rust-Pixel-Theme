@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   computed,
+  nextTick,
   ref,
   onMounted,
   onUnmounted,
@@ -30,6 +31,7 @@ defineEmits<{ inspect: [name: string] }>();
 const filter = ref<StatusFilter>('all');
 const query = ref('');
 const sort = ref<NodeSort>('default');
+const located = ref('');
 const searchInput = ref<HTMLInputElement | null>(null);
 const cards = new Map<string, NodeCardHandle>();
 const visibleNodes = computed(() =>
@@ -56,6 +58,12 @@ function resetFilters() {
 function focusSearch() {
   searchInput.value?.focus({ preventScroll: true });
 }
+async function locateNode(name: string) {
+  if (!visibleNodes.value.some((node) => node.name === name)) resetFilters();
+  located.value = name;
+  await nextTick();
+  cards.get(name)?.focus();
+}
 function keyboardShortcut(event: KeyboardEvent) {
   const target = event.target as HTMLElement;
   const editing =
@@ -73,7 +81,7 @@ function keyboardShortcut(event: KeyboardEvent) {
     focusSearch();
   }
 }
-defineExpose({ focusSearch });
+defineExpose({ focusSearch, locateNode });
 onMounted(() => document.addEventListener('keydown', keyboardShortcut));
 onUnmounted(() => document.removeEventListener('keydown', keyboardShortcut));
 
@@ -154,6 +162,7 @@ const filters: StatusFilter[] = ['all', 'online', 'offline'];
         v-for="(node, index) in visibleNodes"
         :key="node.name"
         :ref="(card) => setCardRef(node.name, card)"
+        :class="{ 'map-located': located === node.name }"
         :node="node"
         :index="index"
         :selected="selectedName === node.name"
@@ -172,3 +181,10 @@ const filters: StatusFilter[] = ['all', 'online', 'offline'];
     </div>
   </section>
 </template>
+
+<style scoped>
+.map-located {
+  border-color: var(--cyan);
+  box-shadow: inset 0 3px 0 var(--cyan);
+}
+</style>

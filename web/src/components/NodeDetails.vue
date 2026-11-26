@@ -103,6 +103,7 @@ const { points: pingPoints, loading: pingLoading } = usePingHistory(
         <DiskPanel :node="selectedNode" />
         <PingPanel :node="selectedNode" />
         <PingHistoryPanel
+          :key="selectedNode.name"
           :points="pingPoints"
           :loading="pingLoading"
           :theme="theme"

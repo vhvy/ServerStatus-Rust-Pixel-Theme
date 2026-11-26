@@ -6,6 +6,7 @@ import { useTheme } from './composables/useTheme';
 import SiteHeader from './components/SiteHeader.vue';
 import FleetOverview from './components/FleetOverview.vue';
 import ConnectionStatus from './components/ConnectionStatus.vue';
+import FleetMap from './components/FleetMap.vue';
 import FleetList from './components/FleetList.vue';
 import NodeDetails from './components/NodeDetails.vue';
 import AboutDialog from './components/AboutDialog.vue';
@@ -93,6 +94,11 @@ function stepNode(offset: number) {
       @step="stepNode"
       @close="selectedName = ''"
       @focus-fallback="fleetList?.focusSearch()"
+    />
+    <FleetMap
+      :nodes="nodes"
+      :loading="loading && !payload"
+      @locate="fleetList?.locateNode($event)"
     />
     <FleetList
       ref="fleetList"
