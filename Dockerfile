@@ -14,7 +14,10 @@ RUN pnpm test && pnpm build
 
 FROM nginx:stable-alpine
 
+RUN apk add --no-cache python3
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY deploy/collector.py /opt/ServerStatus/collector.py
+COPY --chmod=755 deploy/40-ping-history.sh /docker-entrypoint.d/40-ping-history.sh
 COPY --from=build /app/dist/ /opt/ServerStatus/web/
 
 EXPOSE 80

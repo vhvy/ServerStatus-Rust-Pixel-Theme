@@ -2,6 +2,8 @@
 !Dockerfile
 !deploy/
 !deploy/nginx.conf
+!deploy/collector.py
+!deploy/40-ping-history.sh
 !web/
 !web/package.json
 !web/pnpm-lock.yaml

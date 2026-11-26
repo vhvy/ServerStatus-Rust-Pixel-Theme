@@ -20,6 +20,12 @@ services:
       - stat_server
     ports:
       - '8081:80'
-    # Optional: mount your own frontend config without rebuilding the image.
+    environment:
+      ENABLE_PING_HISTORY: 'true'
+      STATS_URL: http://stat_server:8080/json/stats.json
+      INTERVAL: '300'
+      MAX_POINTS: '2016'
+    # Optional mounts for frontend config and history persistence.
     # volumes:
     #   - ./theme-config.json:/opt/ServerStatus/web/theme-config.json:ro
+    #   - ./ping-data:/usr/share/nginx/html/data

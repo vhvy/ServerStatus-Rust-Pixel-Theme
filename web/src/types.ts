@@ -65,6 +65,13 @@ export interface HistorySample {
   tx: number | null;
 }
 
+export interface PingHistoryPoint {
+  t: number;
+  cu: number | null;
+  ct: number | null;
+  cm: number | null;
+}
+
 export interface EmptyState {
   title: string;
   message: string;

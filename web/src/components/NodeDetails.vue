@@ -2,12 +2,14 @@
 import { computed } from 'vue';
 import { format } from '../lib/core';
 import { useDialog } from '../composables/useDialog';
+import { usePingHistory } from '../composables/usePingHistory';
 import DevicePanel from './panels/DevicePanel.vue';
 import CpuPanel from './panels/CpuPanel.vue';
 import MemoryPanel from './panels/MemoryPanel.vue';
 import NetworkPanel from './panels/NetworkPanel.vue';
 import DiskPanel from './panels/DiskPanel.vue';
 import PingPanel from './panels/PingPanel.vue';
+import PingHistoryPanel from './panels/PingHistoryPanel.vue';
 import type { NodeView, HistorySample, Theme } from '../types';
 
 const props = defineProps<{
@@ -35,6 +37,9 @@ const selectedStatus = computed(() =>
     : props.selectedNode?.active
       ? 'ONLINE'
       : 'OFFLINE',
+);
+const { points: pingPoints, loading: pingLoading } = usePingHistory(
+  () => props.selectedNode?.name,
 );
 </script>
 
@@ -97,6 +102,11 @@ const selectedStatus = computed(() =>
         <NetworkPanel :node="selectedNode" :samples="samples" :theme="theme" />
         <DiskPanel :node="selectedNode" />
         <PingPanel :node="selectedNode" />
+        <PingHistoryPanel
+          :points="pingPoints"
+          :loading="pingLoading"
+          :theme="theme"
+        />
       </div>
       <div class="console-bottom">
         <span id="selected-node-id">
